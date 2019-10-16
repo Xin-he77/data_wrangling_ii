@@ -1,32 +1,31 @@
----
-title: "strings_and_factors"
-author: "Xin  He"
-date: "10/10/2019"
-output: github_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-library(tidyverse)
-library(rvest)
-library(p8105.datasets)
-```
+strings\_and\_factors
+================
+Xin He
+10/10/2019
 
 ## string menapulation
-```{r}
+
+``` r
 string_vec = c("my", "name", "is", "xin")
 
 str_detect(string_vec, "xin")
+```
 
+    ## [1] FALSE FALSE FALSE  TRUE
+
+``` r
 str_detect(string_vec, "jeff")
 ```
 
-```{r}
+    ## [1] FALSE FALSE FALSE FALSE
+
+``` r
 str_replace(string_vec, "m", "M")
 ```
 
-```{r}
+    ## [1] "My"   "naMe" "is"   "xin"
+
+``` r
 string_vec = c(
   "i think we all rule for participating",
   "i think i have been caught",
@@ -35,13 +34,23 @@ string_vec = c(
   )
 
 str_detect(string_vec, "^i think")
+```
 
+    ## [1]  TRUE  TRUE  TRUE FALSE
+
+``` r
 str_detect(string_vec, "i think$")
+```
 
+    ## [1] FALSE FALSE FALSE  TRUE
+
+``` r
 str_detect(string_vec, "i think")
 ```
 
-```{r}
+    ## [1] TRUE TRUE TRUE TRUE
+
+``` r
 string_vec = c(
   "Y'all remember Pres. HW Bush?",
   "I saw a green bush",
@@ -52,7 +61,9 @@ string_vec = c(
 str_detect(string_vec,"[Bb]ush")
 ```
 
-```{r}
+    ## [1]  TRUE  TRUE  TRUE FALSE
+
+``` r
 string_vec = c(
   '7th inning stretch',
   '1st half soon to begin. Texas won the toss.',
@@ -63,7 +74,9 @@ string_vec = c(
 str_detect(string_vec, "^[0-9][a-zA-Z]")
 ```
 
-```{r}
+    ## [1]  TRUE  TRUE FALSE  TRUE
+
+``` r
 string_vec = c(
   'Its 7:11 in the evening',
   'want to go to 7-11?',
@@ -74,9 +87,11 @@ string_vec = c(
 str_detect(string_vec, "7.11")
 ```
 
-"." can represent any charactor between 7 and 11
+    ## [1]  TRUE  TRUE FALSE  TRUE
 
-```{r}
+“.” can represent any charactor between 7 and 11
+
+``` r
 string_vec = c(
   'The CI is [2, 5]',
   ':-]',
@@ -86,11 +101,14 @@ string_vec = c(
 
 str_detect(string_vec, pattern = "\\[")
 ```
-we must use two "\\", one will lead to error.
 
+    ## [1]  TRUE FALSE  TRUE  TRUE
+
+we must use two “\\”, one will lead to error.
 
 ## use string in practice
-```{r}
+
+``` r
 pulse_data = 
   haven::read_sas("./data/public_pulse_data.sas7bdat") %>%
   janitor::clean_names() %>%
@@ -108,7 +126,24 @@ pulse_data =
 print(pulse_data, n = 12)
 ```
 
-```{r}
+    ## # A tibble: 4,348 x 5
+    ##       id visit   age sex     bdi
+    ##    <dbl> <fct> <dbl> <chr> <dbl>
+    ##  1 10003 00m    48.0 male      7
+    ##  2 10003 01m    48.0 male      1
+    ##  3 10003 06m    48.0 male      2
+    ##  4 10003 12m    48.0 male      0
+    ##  5 10015 00m    72.5 male      6
+    ##  6 10015 01m    72.5 male     NA
+    ##  7 10015 06m    72.5 male     NA
+    ##  8 10015 12m    72.5 male     NA
+    ##  9 10022 00m    58.5 male     14
+    ## 10 10022 01m    58.5 male      3
+    ## 11 10022 06m    58.5 male      8
+    ## 12 10022 12m    58.5 male     NA
+    ## # … with 4,336 more rows
+
+``` r
 nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
 
 table_marj = 
@@ -120,7 +155,7 @@ table_marj =
   as_tibble()
 ```
 
-```{r}
+``` r
 data_marj = 
   table_marj %>%
   select(-contains("P Value")) %>%
@@ -136,7 +171,7 @@ data_marj =
   filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
 ```
 
-```{r}
+``` r
 data_marj %>%
   filter(age == "12-17") %>% 
   mutate(State = fct_reorder(State, percent)) %>% 
@@ -145,9 +180,11 @@ data_marj %>%
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
+![](strings_and_factors_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## Factors
-```{r}
+
+``` r
 weather_df = 
   rnoaa::meteo_pull_monitors(
     c("USW00094728", "USC00519397", "USS0023B17S"),
@@ -161,12 +198,56 @@ weather_df =
     tmin = tmin / 10,
     tmax = tmax / 10) %>%
   select(name, id, everything())
+```
 
+    ## Registered S3 method overwritten by 'crul':
+    ##   method                 from
+    ##   as.character.form_file httr
+
+    ## Registered S3 method overwritten by 'hoardr':
+    ##   method           from
+    ##   print.cache_info httr
+
+    ## file path:          /Users/hexin/Library/Caches/rnoaa/ghcnd/USW00094728.dly
+
+    ## file last updated:  2019-09-26 10:26:24
+
+    ## file min/max dates: 1869-01-01 / 2019-09-30
+
+    ## file path:          /Users/hexin/Library/Caches/rnoaa/ghcnd/USC00519397.dly
+
+    ## file last updated:  2019-09-26 10:26:33
+
+    ## file min/max dates: 1965-01-01 / 2019-09-30
+
+    ## file path:          /Users/hexin/Library/Caches/rnoaa/ghcnd/USS0023B17S.dly
+
+    ## file last updated:  2019-09-26 10:26:36
+
+    ## file min/max dates: 1999-09-01 / 2019-09-30
+
+``` r
 weather_df
 ```
 
+    ## # A tibble: 1,095 x 6
+    ##    name           id          date        prcp  tmax  tmin
+    ##    <chr>          <chr>       <date>     <dbl> <dbl> <dbl>
+    ##  1 CentralPark_NY USW00094728 2017-01-01     0   8.9   4.4
+    ##  2 CentralPark_NY USW00094728 2017-01-02    53   5     2.8
+    ##  3 CentralPark_NY USW00094728 2017-01-03   147   6.1   3.9
+    ##  4 CentralPark_NY USW00094728 2017-01-04     0  11.1   1.1
+    ##  5 CentralPark_NY USW00094728 2017-01-05     0   1.1  -2.7
+    ##  6 CentralPark_NY USW00094728 2017-01-06    13   0.6  -3.8
+    ##  7 CentralPark_NY USW00094728 2017-01-07    81  -3.2  -6.6
+    ##  8 CentralPark_NY USW00094728 2017-01-08     0  -3.8  -8.8
+    ##  9 CentralPark_NY USW00094728 2017-01-09     0  -4.9  -9.9
+    ## 10 CentralPark_NY USW00094728 2017-01-10     0   7.8  -6  
+    ## # … with 1,085 more rows
+
 **relevel**
-```{r}
+
+``` r
 weather_df %>%
   mutate(name = fct_relevel(name, c("Waikiki_HA", "CentralPark_NY", "Waterhole_WA"))) %>% 
   ggplot(aes(x = name, y = tmax)) + 
@@ -174,7 +255,11 @@ weather_df %>%
   theme(legend.position = "bottom")
 ```
 
-```{r}
+    ## Warning: Removed 3 rows containing non-finite values (stat_ydensity).
+
+![](strings_and_factors_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
 weather_df %>%
   mutate(name = forcats::fct_relevel(name, c("Waterhole_WA"))) %>% 
   ggplot(aes(x = name, y = tmax)) + 
@@ -182,17 +267,26 @@ weather_df %>%
   theme(legend.position = "bottom")
 ```
 
+    ## Warning: Removed 3 rows containing non-finite values (stat_ydensity).
+
+![](strings_and_factors_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
 **reorder**
-```{r}
+
+``` r
 weather_df %>%
   mutate(name = forcats::fct_reorder(name, tmax)) %>% 
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = "blue", alpha = .5) + 
   theme(legend.position = "bottom")
 ```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_ydensity).
+
+![](strings_and_factors_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 order with tmax (small to big)
 
-```{r}
+``` r
 data("nyc_airbnb")
 
 nyc_airbnb %>%
@@ -204,27 +298,37 @@ nyc_airbnb %>%
   coord_flip() + 
   ylim(0, 1000)
 ```
-coord_flip() reverse x and y.
 
+    ## Warning: Removed 109 rows containing non-finite values (stat_boxplot).
+
+![](strings_and_factors_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+coord\_flip() reverse x and y.
 
 what about factors and linear models?
-```{r}
+
+``` r
 weather_df %>%
   lm(tmax ~ name, data = .)
 ```
 
-```{r}
+    ## 
+    ## Call:
+    ## lm(formula = tmax ~ name, data = .)
+    ## 
+    ## Coefficients:
+    ##      (Intercept)    nameWaikiki_HA  nameWaterhole_WA  
+    ##           17.366            12.291            -9.884
+
+``` r
 weather_df %>%
   mutate(name = forcats::fct_relevel(name, c("Waikiki_HA", "CentralPark_NY", "Waterhole_WA"))) %>% 
   lm(tmax ~ name, data = .)
 ```
 
-
-
-
-
-
-
-
-
-
+    ## 
+    ## Call:
+    ## lm(formula = tmax ~ name, data = .)
+    ## 
+    ## Coefficients:
+    ##        (Intercept)  nameCentralPark_NY    nameWaterhole_WA  
+    ##              29.66              -12.29              -22.18
